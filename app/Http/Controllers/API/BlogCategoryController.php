@@ -15,7 +15,7 @@ class BlogCategoryController extends Controller
         'name' => ['required', 'string'],
     ];
 
-    public function create(Request $request)
+    public function created(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), $this->rules);
@@ -38,7 +38,7 @@ class BlogCategoryController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function updated(Request $request, $id)
     {
         try {
             $validator = Validator::make($request->all(), $this->rules);
@@ -65,7 +65,7 @@ class BlogCategoryController extends Controller
         }
     }
 
-    public function getAll(Request $request)
+    public function showAll(Request $request)
     {
         try {
             $name = $request->input('name');
@@ -85,20 +85,27 @@ class BlogCategoryController extends Controller
         }
     }
 
-    public function get(Request $request)
+    public function show(Request $request)
     {
         try {
             $name = $request->input('name');
             $offset = $request->input('offset') ?? 0;
             $limit = $request->input('limit') ?? 5;
+            $showDeleted = $request->input('showDeleted');
 
-            $category = BlogCategory::query()->offset(((int)$offset) * ((int)$limit))->limit((int)$limit);
+            $category = BlogCategory::query();
 
             if ($name) {
                 $category->where('name', 'like', '%' . $name . '%');
             }
+            if ($showDeleted) {
+                $category->withTrashed();
+            }
 
-            return ResponseFormatter::pagination($category->get(), 'Success', $offset, $limit);
+            $count = $category->get()->count();
+            $data = $category->offset(((int)$offset) * ((int)$limit))->limit((int)$limit);
+
+            return ResponseFormatter::pagination($data->get(), 'Success', $count, $offset, $limit);
         } catch (Exception $err) {
             return ResponseFormatter::error($err, 'Something Wrong', 500);
         }
@@ -118,7 +125,7 @@ class BlogCategoryController extends Controller
         }
     }
 
-    public function delete($id)
+    public function deleted($id)
     {
         try {
             $category = BlogCategory::find($id);
@@ -134,7 +141,7 @@ class BlogCategoryController extends Controller
         }
     }
 
-    public function deletePermanent($id)
+    public function forceDeleted($id)
     {
         try {
             $category = BlogCategory::withTrashed()->find($id);
@@ -150,7 +157,7 @@ class BlogCategoryController extends Controller
         }
     }
 
-    public function restore($id)
+    public function restored($id)
     {
         try {
             $category = BlogCategory::withTrashed()->find($id);

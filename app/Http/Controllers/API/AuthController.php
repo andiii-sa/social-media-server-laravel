@@ -61,8 +61,10 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $rules = [
-            'email' => 'required|string',
-            'password' => 'required|string',
+            'username' => 'required|string|unique:users',
+            'name' => 'required|string',
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|string|min:6',
         ];
 
         try {
@@ -71,13 +73,21 @@ class AuthController extends Controller
                 return ResponseFormatter::error($validator->errors(), 'Failed Validation', 400);
             }
 
-            $findCategory = User::where('name', strtolower($request->name))->first();
+            $findCategory = User::where('username', $request->username)->first();
             if ($findCategory) {
-                return ResponseFormatter::error(null, 'Data already exists', 400);
+                return ResponseFormatter::error(null, 'Username already exists', 400);
+            }
+
+            $findCategory = User::where('email', strtolower($request->email))->first();
+            if ($findCategory) {
+                return ResponseFormatter::error(null, 'Email already exists', 400);
             }
 
             $category = User::create([
+                'username' => $request->username,
                 'name' => $request->name,
+                'email' => strtolower($request->email),
+                'password' => Hash::make($request->password),
             ]);
 
             return ResponseFormatter::success($category, 'Success');

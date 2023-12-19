@@ -20,7 +20,7 @@ class ResponseFormatter
         return response()->json(self::$response, self::$response['meta']['code']);
     }
 
-    public static function pagination($data = null, $message = null, $offset, $limit)
+    public static function pagination($data = null, $message = null, $count, $offset, $limit)
     {
         self::$response['meta']['message'] = $message;
         self::$response['data'] = $data;
@@ -29,6 +29,9 @@ class ResponseFormatter
         }
         if ($limit >= 0) {
             self::$response['meta']['limit'] = $limit;
+        }
+        if ($limit >= 0) {
+            self::$response['meta']['total'] = $count;
         }
 
         return response()->json(self::$response, self::$response['meta']['code']);

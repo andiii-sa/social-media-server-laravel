@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BlogCategoryController;
+use App\Http\Controllers\API\BlogController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,19 +22,39 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('login', [AuthController::class, 'login']);
+Route::post('register', [AuthController::class, 'register']);
 
-Route::group([
-    'middleware' => ['jwt.verify'],
-], function () {
-    Route::get('detailToken', [AuthController::class, 'detailToken']);
+Route::group(['middleware' => ['jwt.verify'],], function () {
+    // Route user have role Admin
+    Route::group(['middleware' => 'isAdmin',], function () {
+        Route::get('detailToken', [AuthController::class, 'detailToken']);
+
+        // Blog
+        Route::post('blog-category', [BlogCategoryController::class, 'created']);
+        Route::put('blog-category/{id}/update', [BlogCategoryController::class, 'updated']);
+        Route::put('blog-category/{id}/restore', [BlogCategoryController::class, 'restored']);
+        Route::delete('blog-category/{id}', [BlogCategoryController::class, 'deleted']);
+        Route::delete('blog-category/{id}/force', [BlogCategoryController::class, 'forceDeleted']);
+
+        Route::post('blog', [BlogController::class, 'created']);
+        Route::post('blog/{id}/update', [BlogController::class, 'updated']);
+        Route::delete('blog/{id}', [BlogController::class, 'deleted']);
+        Route::delete('blog/{id}/force', [BlogController::class, 'forceDeleted']);
+        Route::put('blog/{id}/restore', [BlogController::class, 'restored']);
+    });
+
+    // Route All Role
+
 });
 
 
-Route::get('blog-category/all', [BlogCategoryController::class, 'getAll']);
+// Public
+
+// Blog
+Route::get('blog-category/all', [BlogCategoryController::class, 'showAll']);
 Route::get('blog-category/{id}/detail', [BlogCategoryController::class, 'detail']);
-Route::get('blog-category', [BlogCategoryController::class, 'get']);
-Route::post('blog-category', [BlogCategoryController::class, 'create']);
-Route::put('blog-category/{id}/update', [BlogCategoryController::class, 'update']);
-Route::put('blog-category/{id}/restore', [BlogCategoryController::class, 'restore']);
-Route::delete('blog-category/{id}', [BlogCategoryController::class, 'delete']);
-Route::delete('blog-category/{id}/permanent', [BlogCategoryController::class, 'deletePermanent']);
+Route::get('blog-category', [BlogCategoryController::class, 'show']);
+
+Route::get('blog/all', [BlogController::class, 'showAll']);
+Route::get('blog', [BlogController::class, 'show']);
+Route::get('blog/{id}/detail', [BlogController::class, 'detail']);

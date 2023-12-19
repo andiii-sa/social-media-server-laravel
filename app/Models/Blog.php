@@ -21,14 +21,16 @@ class Blog extends Model
         'blogCategoryId', 'authorId', 'title', 'image', 'body'
     ];
 
-    // realtion
+    // relation
     public function category()
     {
-        return $this->belongsTo(BlogCategory::class, 'id', 'blogCategoryId');
+        return $this->belongsTo(BlogCategory::class, 'blogCategoryId', 'id')
+            ->select('blog_category.id', 'blog_category.name');
     }
 
     public function author()
     {
-        return $this->belongsTo(User::class, 'id', 'authorId');
+        return $this->belongsTo(User::class, 'authorId', 'id')
+            ->select('users.id', 'users.username', 'users.name', 'users.photo');
     }
 }

@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exports\BlogCategoryExport;
+use App\Exports\BlogCategoryExportFormat;
+use App\Exports\BlogExport;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
+use App\Imports\BlogCategoryImport;
 use App\Models\Blog;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BlogController extends Controller
 {
@@ -210,6 +215,23 @@ class BlogController extends Controller
             $category->restore();
 
             return ResponseFormatter::success($category, 'Success');
+        } catch (Exception $err) {
+            return ResponseFormatter::error($err, 'Something Wrong', 500);
+        }
+    }
+
+    public function fileImportData(Request $request)
+    {
+        try {
+            $import = new BlogCategoryImport();
+            $import->onlySheets('data_category');
+            $data = Excel::toArray($import, $request->file('file')->store('temp'));
+
+            if (!$data) {
+                return ResponseFormatter::error(null, 'Sheet not found', 404);
+            }
+
+            return ResponseFormatter::success($data, 'Success');
         } catch (Exception $err) {
             return ResponseFormatter::error($err, 'Something Wrong', 500);
         }

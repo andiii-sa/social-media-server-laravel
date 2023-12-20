@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exports\BlogCategoryExport;
+use App\Exports\BlogCategoryExportFormat;
+use App\Exports\BlogExport;
 use App\Http\Controllers\Controller;
 use App\Models\BlogCategory;
 use Illuminate\Http\Request;
 use App\Helpers\ResponseFormatter;
 use Exception;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BlogCategoryController extends Controller
 {
@@ -168,6 +172,33 @@ class BlogCategoryController extends Controller
             $category->restore();
 
             return ResponseFormatter::success($category, 'Success');
+        } catch (Exception $err) {
+            return ResponseFormatter::error($err, 'Something Wrong', 500);
+        }
+    }
+
+    public function fileExportFormat()
+    {
+        try {
+            return Excel::download(new BlogCategoryExportFormat, 'blog-category-format.xlsx');
+        } catch (Exception $err) {
+            return ResponseFormatter::error($err, 'Something Wrong', 500);
+        }
+    }
+
+    public function fileExportData()
+    {
+        try {
+            return Excel::download(new BlogCategoryExport, 'blog-category.xlsx');
+        } catch (Exception $err) {
+            return ResponseFormatter::error($err, 'Something Wrong', 500);
+        }
+    }
+
+    public function fileExportDataMS()
+    {
+        try {
+            return Excel::download(new BlogExport, 'blog-category-ms.xlsx');
         } catch (Exception $err) {
             return ResponseFormatter::error($err, 'Something Wrong', 500);
         }

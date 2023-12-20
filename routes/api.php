@@ -35,6 +35,7 @@ Route::group(['middleware' => ['jwt.verify'],], function () {
         Route::put('blog-category/{id}/restore', [BlogCategoryController::class, 'restored']);
         Route::delete('blog-category/{id}', [BlogCategoryController::class, 'deleted']);
         Route::delete('blog-category/{id}/force', [BlogCategoryController::class, 'forceDeleted']);
+        Route::post('blog-category/file-import', [BlogController::class, 'fileImportData']);
 
         Route::post('blog', [BlogController::class, 'created']);
         Route::post('blog/{id}/update', [BlogController::class, 'updated']);
@@ -54,7 +55,12 @@ Route::group(['middleware' => ['jwt.verify'],], function () {
 Route::get('blog-category/all', [BlogCategoryController::class, 'showAll']);
 Route::get('blog-category/{id}/detail', [BlogCategoryController::class, 'detail']);
 Route::get('blog-category', [BlogCategoryController::class, 'show']);
+Route::get('blog-category/file-export', [BlogController::class, 'fileExportData']);
+Route::get('blog-category/file-export-format', [BlogController::class, 'fileExportFormat']);
 
 Route::get('blog/all', [BlogController::class, 'showAll']);
 Route::get('blog', [BlogController::class, 'show']);
 Route::get('blog/{id}/detail', [BlogController::class, 'detail']);
+
+// EXAMPLE MULTI SHEETS
+Route::get('blog/file-export-ms', [BlogController::class, 'fileExportDataMS']);

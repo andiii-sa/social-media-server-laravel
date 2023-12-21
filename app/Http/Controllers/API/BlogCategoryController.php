@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BlogCategory;
 use Illuminate\Http\Request;
 use App\Helpers\ResponseFormatter;
+use App\Imports\BlogCategoryImport;
 use Exception;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -186,6 +187,52 @@ class BlogCategoryController extends Controller
         }
     }
 
+    public function fileImportData(Request $request)
+    {
+        try {
+            $import = new BlogCategoryImport();
+            $import->onlySheets('data_category');
+            $data = Excel::toArray($import, $request->file('file')->store('temp'));
+
+            if (!array_key_exists('data_category', $data)) {
+                return ResponseFormatter::error(null, 'Sheet not found', 404);
+            }
+
+            if (count($data['data_category']) < 1) {
+                return ResponseFormatter::error(null, 'Empty data', 400);
+            }
+
+            if (!array_key_exists('name', $data['data_category'][0])) {
+                return ResponseFormatter::error(null, 'Please follow the format excel.', 400);
+            }
+
+            $findEmptyField = false;
+            foreach ($data['data_category'] as $key => $val) {
+                if (!$val['name']) {
+                    $findEmptyField = true;
+                    break;
+                }
+            }
+
+            if ($findEmptyField) {
+                return ResponseFormatter::error(null, 'All field must be required', 400);
+            }
+
+            foreach ($data['data_category'] as $key => $val) {
+                $findCategory = BlogCategory::where('name', strtolower($val['name']))->first();
+                if (!$findCategory) {
+                    BlogCategory::create([
+                        'name' => $val['name'],
+                    ]);
+                }
+            }
+
+            return ResponseFormatter::success(null, 'Success');
+        } catch (Exception $err) {
+            return ResponseFormatter::error($err, 'Something Wrong', 500);
+        }
+    }
+
     public function fileExportData()
     {
         try {
@@ -195,6 +242,7 @@ class BlogCategoryController extends Controller
         }
     }
 
+    // EXAMPLE EXPORT MULTI SHEETS
     public function fileExportDataMS()
     {
         try {

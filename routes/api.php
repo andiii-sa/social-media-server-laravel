@@ -35,7 +35,7 @@ Route::group(['middleware' => ['jwt.verify'],], function () {
         Route::put('blog-category/{id}/restore', [BlogCategoryController::class, 'restored']);
         Route::delete('blog-category/{id}', [BlogCategoryController::class, 'deleted']);
         Route::delete('blog-category/{id}/force', [BlogCategoryController::class, 'forceDeleted']);
-        Route::post('blog-category/file-import', [BlogController::class, 'fileImportData']);
+        Route::post('blog-category/file-import', [BlogCategoryController::class, 'fileImportData']);
 
         Route::post('blog', [BlogController::class, 'created']);
         Route::post('blog/{id}/update', [BlogController::class, 'updated']);

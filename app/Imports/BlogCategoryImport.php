@@ -33,8 +33,10 @@ class FirstSheetImport implements ToModel, WithHeadingRow
     {
         return new BlogCategory([
             'name'     => $row['name'],
-            'x'     => $row['x'],
-            'y'     => $row['y'],
         ]);
+    }
+    public function headingRow(): int
+    {
+        return 1;
     }
 }

@@ -219,21 +219,4 @@ class BlogController extends Controller
             return ResponseFormatter::error($err, 'Something Wrong', 500);
         }
     }
-
-    public function fileImportData(Request $request)
-    {
-        try {
-            $import = new BlogCategoryImport();
-            $import->onlySheets('data_category');
-            $data = Excel::toArray($import, $request->file('file')->store('temp'));
-
-            if (!$data) {
-                return ResponseFormatter::error(null, 'Sheet not found', 404);
-            }
-
-            return ResponseFormatter::success($data, 'Success');
-        } catch (Exception $err) {
-            return ResponseFormatter::error($err, 'Something Wrong', 500);
-        }
-    }
 }

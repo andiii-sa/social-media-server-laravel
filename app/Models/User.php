@@ -31,11 +31,6 @@ class User extends Authenticatable implements JWTSubject
         'password',
     ];
 
-    // relation
-    public function author()
-    {
-        return $this->hasMany(Blog::class, 'authorId', 'id');
-    }
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -55,5 +50,21 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    // relation
+    public function author()
+    {
+        return $this->hasMany(Blog::class, 'authorId', 'id');
+    }
+
+    public function presence()
+    {
+        return $this->hasMany(PresenceEmployee::class, 'employeeId', 'id');
+    }
+
+    public function presence_schedule()
+    {
+        return $this->hasMany(PresenceScheduleEmployee::class, 'employeeId', 'id');
     }
 }

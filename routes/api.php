@@ -3,6 +3,9 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BlogCategoryController;
 use App\Http\Controllers\API\BlogController;
+use App\Http\Controllers\API\PresenceListDayController;
+use App\Http\Controllers\API\PresenceLocationWorkController;
+use App\Models\PresenceLocationWork;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +45,13 @@ Route::group(['middleware' => ['jwt.verify'],], function () {
         Route::delete('blog/{id}', [BlogController::class, 'deleted']);
         Route::delete('blog/{id}/force', [BlogController::class, 'forceDeleted']);
         Route::put('blog/{id}/restore', [BlogController::class, 'restored']);
+
+        // Presence
+        Route::post('presence/location-work', [PresenceLocationWorkController::class, 'created']);
+        Route::put('presence/location-work/{id}/update', [PresenceLocationWorkController::class, 'updated']);
+        Route::delete('presence/location-work/{id}', [PresenceLocationWorkController::class, 'deleted']);
+        Route::delete('presence/location-work/{id}/force', [PresenceLocationWorkController::class, 'forceDeleted']);
+        Route::put('presence/location-work/{id}/restore', [PresenceLocationWorkController::class, 'restored']);
     });
 
     // Route All Role
@@ -61,6 +71,14 @@ Route::get('blog-category/file-export-format', [BlogController::class, 'fileExpo
 Route::get('blog/all', [BlogController::class, 'showAll']);
 Route::get('blog', [BlogController::class, 'show']);
 Route::get('blog/{id}/detail', [BlogController::class, 'detail']);
+
+// Presence
+Route::get('presence/list-day/all', [PresenceListDayController::class, 'showAll']);
+
+Route::get('presence/location-work/all', [PresenceLocationWorkController::class, 'showAll']);
+Route::get('presence/location-work', [PresenceLocationWorkController::class, 'show']);
+Route::get('presence/location-work/{id}/detail', [PresenceLocationWorkController::class, 'detail']);
+
 
 // EXAMPLE MULTI SHEETS
 Route::get('blog/file-export-ms', [BlogController::class, 'fileExportDataMS']);

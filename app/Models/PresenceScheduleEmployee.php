@@ -26,16 +26,16 @@ class PresenceScheduleEmployee extends Model
     // realtion
     public function employee()
     {
-        return $this->belongsTo(User::class, 'employeeId', 'id');
+        return $this->belongsTo(User::class, 'employeeId', 'id')->select('id', 'username', 'email', 'name');
     }
 
     public function day()
     {
-        return $this->belongsTo(PresenceListDay::class, 'dayId', 'id');
+        return $this->belongsTo(PresenceListDay::class, 'dayId', 'id')->select('id', 'name');
     }
 
     public function location_work()
     {
-        return $this->belongsTo(PresenceLocationWork::class, 'locationWorkId', 'id');
+        return $this->belongsTo(PresenceLocationWork::class, 'locationWorkId', 'id')->select('id', 'name', 'clockIn', 'clockOut', 'isRequiredLocation', 'isRequiredPhoto');
     }
 }

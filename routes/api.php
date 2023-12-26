@@ -5,6 +5,7 @@ use App\Http\Controllers\API\BlogCategoryController;
 use App\Http\Controllers\API\BlogController;
 use App\Http\Controllers\API\PresenceListDayController;
 use App\Http\Controllers\API\PresenceLocationWorkController;
+use App\Http\Controllers\API\PresenceScheduleEmployeeController;
 use App\Models\PresenceLocationWork;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -52,6 +53,13 @@ Route::group(['middleware' => ['jwt.verify'],], function () {
         Route::delete('presence/location-work/{id}', [PresenceLocationWorkController::class, 'deleted']);
         Route::delete('presence/location-work/{id}/force', [PresenceLocationWorkController::class, 'forceDeleted']);
         Route::put('presence/location-work/{id}/restore', [PresenceLocationWorkController::class, 'restored']);
+
+        Route::post('presence/schedule', [PresenceScheduleEmployeeController::class, 'created']);
+        Route::put('presence/schedule/{id}/update', [PresenceScheduleEmployeeController::class, 'updated']);
+        Route::delete('presence/schedule/{id}', [PresenceScheduleEmployeeController::class, 'deleted']);
+        Route::delete('presence/schedule/{id}/force', [PresenceScheduleEmployeeController::class, 'forceDeleted']);
+        Route::put('presence/schedule/{id}/restore', [PresenceScheduleEmployeeController::class, 'restored']);
+        Route::post('presence/schedule/file-import', [PresenceScheduleEmployeeController::class, 'fileImportData']);
     });
 
     // Route All Role
@@ -65,8 +73,8 @@ Route::group(['middleware' => ['jwt.verify'],], function () {
 Route::get('blog-category/all', [BlogCategoryController::class, 'showAll']);
 Route::get('blog-category/{id}/detail', [BlogCategoryController::class, 'detail']);
 Route::get('blog-category', [BlogCategoryController::class, 'show']);
-Route::get('blog-category/file-export', [BlogController::class, 'fileExportData']);
-Route::get('blog-category/file-export-format', [BlogController::class, 'fileExportFormat']);
+Route::get('blog-category/file-export', [BlogCategoryController::class, 'fileExportData']);
+Route::get('blog-category/file-export-format', [BlogCategoryController::class, 'fileExportFormat']);
 
 Route::get('blog/all', [BlogController::class, 'showAll']);
 Route::get('blog', [BlogController::class, 'show']);
@@ -79,6 +87,11 @@ Route::get('presence/location-work/all', [PresenceLocationWorkController::class,
 Route::get('presence/location-work', [PresenceLocationWorkController::class, 'show']);
 Route::get('presence/location-work/{id}/detail', [PresenceLocationWorkController::class, 'detail']);
 
+Route::get('presence/schedule/all', [PresenceScheduleEmployeeController::class, 'showAll']);
+Route::get('presence/schedule', [PresenceScheduleEmployeeController::class, 'show']);
+Route::get('presence/schedule/{id}/detail', [PresenceScheduleEmployeeController::class, 'detail']);
+Route::get('presence/schedule/file-export', [PresenceScheduleEmployeeController::class, 'fileExportData']);
+Route::get('presence/schedule/file-export-format', [PresenceScheduleEmployeeController::class, 'fileExportFormat']);
 
 // EXAMPLE MULTI SHEETS
 Route::get('blog/file-export-ms', [BlogController::class, 'fileExportDataMS']);

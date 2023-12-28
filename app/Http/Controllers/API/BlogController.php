@@ -197,6 +197,7 @@ class BlogController extends Controller
             }
 
             $category->forceDelete();
+            Storage::delete($category->image);
 
             return ResponseFormatter::success($category, 'Success');
         } catch (Exception $err) {

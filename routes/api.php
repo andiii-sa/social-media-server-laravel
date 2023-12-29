@@ -106,7 +106,6 @@ Route::get('presence/employee/all', [PresenceEmployeeController::class, 'showAll
 Route::get('presence/employee', [PresenceEmployeeController::class, 'show']);
 Route::get('presence/employee/{id}/detail', [PresenceEmployeeController::class, 'detail']);
 Route::get('presence/employee/file-export', [PresenceEmployeeController::class, 'fileExportData']);
-Route::get('presence/employee/file-export-format', [PresenceEmployeeController::class, 'fileExportFormat']);
 
 // EXAMPLE MULTI SHEETS
 Route::get('blog/file-export-ms', [BlogController::class, 'fileExportDataMS']);

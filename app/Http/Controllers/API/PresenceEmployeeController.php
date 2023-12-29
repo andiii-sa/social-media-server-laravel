@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exports\PresenceEmployeeExport;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Models\PresenceEmployee;
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class PresenceEmployeeController extends Controller
@@ -369,6 +371,15 @@ class PresenceEmployeeController extends Controller
 
 
             return ResponseFormatter::success($data, 'Success');
+        } catch (Exception $err) {
+            return ResponseFormatter::error($err, 'Something Wrong', 500);
+        }
+    }
+
+    public function fileExportData()
+    {
+        try {
+            return Excel::download(new PresenceEmployeeExport, 'presence-employee.xlsx');
         } catch (Exception $err) {
             return ResponseFormatter::error($err, 'Something Wrong', 500);
         }

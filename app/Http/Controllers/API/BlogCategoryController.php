@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Helpers\ResponseFormatter;
 use App\Imports\BlogCategoryImport;
 use Exception;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -189,10 +190,12 @@ class BlogCategoryController extends Controller
 
     public function fileImportData(Request $request)
     {
+        $locFile = '';
         try {
             $import = new BlogCategoryImport();
             $import->onlySheets('data_category');
-            $data = Excel::toArray($import, $request->file('file')->store('temp'));
+            $locFile = $request->file('file')->store('temp');
+            $data = Excel::toArray($import, $locFile);
 
             if (!array_key_exists('data_category', $data)) {
                 return ResponseFormatter::error(null, 'Sheet not found', 404);
@@ -227,8 +230,10 @@ class BlogCategoryController extends Controller
                 }
             }
 
+            Storage::delete($locFile);
             return ResponseFormatter::success(null, 'Success');
         } catch (Exception $err) {
+            Storage::delete($locFile);
             return ResponseFormatter::error($err, 'Something Wrong', 500);
         }
     }

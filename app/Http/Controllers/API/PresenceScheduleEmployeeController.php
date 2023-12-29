@@ -13,6 +13,7 @@ use App\Models\PresenceScheduleEmployee;
 use Exception;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -233,10 +234,13 @@ class PresenceScheduleEmployeeController extends Controller
 
     public function fileImportData(Request $request)
     {
+        $locFile = '';
+
         try {
             $import = new PresenceScheduleEmployeeImport();
             $import->onlySheets('data_schedule_employee');
-            $data = Excel::toArray($import, $request->file('file')->store('temp'));
+            $locFile = $request->file('file')->store('temp');
+            $data = Excel::toArray($import, $locFile);
 
             if (!array_key_exists('data_schedule_employee', $data)) {
                 return ResponseFormatter::error(null, 'Sheet not found', 404);
@@ -338,8 +342,10 @@ class PresenceScheduleEmployeeController extends Controller
                 }
             }
 
+            Storage::delete($locFile);
             return ResponseFormatter::success(null, 'Success');
         } catch (Exception $err) {
+            Storage::delete($locFile);
             return ResponseFormatter::error($err, 'Something Wrong', 500);
         }
     }

@@ -7,7 +7,9 @@ use App\Http\Controllers\API\PresenceEmployeeController;
 use App\Http\Controllers\API\PresenceListDayController;
 use App\Http\Controllers\API\PresenceLocationWorkController;
 use App\Http\Controllers\API\PresenceScheduleEmployeeController;
+use App\Mail\MyTestEmail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -109,3 +111,13 @@ Route::get('presence/employee/file-export', [PresenceEmployeeController::class, 
 
 // EXAMPLE MULTI SHEETS
 Route::get('blog/file-export-ms', [BlogController::class, 'fileExportDataMS']);
+// Test Mail
+Route::get(
+    'test-mail',
+    function () {
+        $name = 'cucokkk';
+
+        Mail::to('icang@yopmail.com')->send(new MyTestEmail($name));
+    }
+
+);
